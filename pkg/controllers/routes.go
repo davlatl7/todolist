@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"coinkeeper/configs"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -10,6 +12,7 @@ func RunRoutes() error {
 	router := gin.Default()
 
 	router.GET("/ping", PingPong)
+	gin.SetMode(configs.AppSettings.AppParams.GinMode)
 	auth := router.Group("/auth")
 	{
 		auth.POST("/sign-up", SignUp)
@@ -35,7 +38,8 @@ func RunRoutes() error {
 		taskG.DELETE("/:id")
 	}
 
-	err := router.Run(":8181")
+	err := router.Run(fmt.Sprintf("%s:%s", configs.AppSettings.AppParams.ServerURL, configs.AppSettings.AppParams.PortRun))
+
 	if err != nil {
 		return err
 	}
